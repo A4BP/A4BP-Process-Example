@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Deployment plan template for the SOA B2BX12OrderGateway composite
+    - this one is copied to ../ and changed according to the settings in
+    ../../bin build.properties
+-->
+<SOAConfigPlan xmlns:jca="http://platform.integration.oracle/blocks/adapter/fw/metadata" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy" xmlns="http://schemas.oracle.com/soa/configplan">
+   <!-- replace the endpoint for the store front service -->
+   <wsdlAndSchema name="services/oracle/fodemo/storefront/store/service/common/serviceinterface/StoreFrontService.wsdl">
+    <searchReplace>
+        <search>@endpointURI@</search>
+        <replace>http://@storefront.endpoint@</replace>
+     </searchReplace>
+   </wsdlAndSchema>  
+   <!-- replace the endpoint for the orderbooking composite, either with bam or without -->
+   <wsdlAndSchema name="services/orderbooking/OrderBookingProcessor.wsdl">
+    <searchReplace>
+        <search>@endpointURI@</search>
+        <replace>http://@managed.server.host@:@managed.server.port@/soa-infra/services/default/@composite.name@!1.0/orderprocessor_client_ep</replace>
+     </searchReplace>
+   </wsdlAndSchema>     
+</SOAConfigPlan>

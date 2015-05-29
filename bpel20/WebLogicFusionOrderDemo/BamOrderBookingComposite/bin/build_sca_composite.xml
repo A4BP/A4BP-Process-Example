@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project name="BamOrderBookingComposite" default="create-deployable-composite">
+
+  <!-- master build.properties -->  
+  <property file="../../bin/build.properties"/>
+  <!-- import the property file -->
+  <property file="sca-build.properties"/>           
+  <property name="deploy.dir" value="../deploy"/>
+
+  <!-- check if ant-sca-test.xml is there for testing -->
+  <condition property="test.xml.available" value="true">
+    <available file="${oracle.home}/bin/ant-sca-test.xml"/>
+  </condition>
+
+  <!-- create and later deploy bam version? -->
+  <condition property="use.bam" value="true">
+    <equals arg1="${use.bam.implementation}" arg2="true"/>
+  </condition>
+
+  <!-- test ob version? -->
+  <condition property="test.bam" value="true">
+    <and>
+        <isset property="use.bam"/>
+        <isset property="test.xml.available"/>
+    </and>    
+  </condition>
+
+  <!-- seed do's? -->
+  <condition property="seed.bam.objects" value="true">
+    <and>
+        <isset property="use.bam"/>
+        <equals arg1="${seed.bam.do}" arg2="true"/>
+    </and>    
+  </condition>
+
+  <!-- seed adapter connection factory ? -->
+  <condition property="seed.bam.adapter" value="true">
+    <and>
+        <isset property="use.bam"/>
+        <equals arg1="${seed.bam.adapter.cf}" arg2="true"/>   
+    </and>    
+  </condition>
+
+  <!-- cleanup -->  
+  <target name="clean">
+    <property name="sca-inf.classes.dir" value="../SCA-INF/classes"/>
+    <echo message="Deleting contents of ${sca-inf.classes.dir}"/>
+    <delete dir="${sca-inf.classes.dir}" includeemptydirs="true" includes="*/**">
+    </delete>
+    <property name="deploy.composite.filename" 
+        value="${deploy.dir}/sca_${composite.name}_rev${composite.revision}.jar"/>
+    <delete dir="results" deleteonexit="true"/>
+    <echo message="Deleting ${deploy.composite.filename}"/>
+    <delete file="${deploy.composite.filename}"/>
+  </target>
+
+  <!-- create the deployable composite sar -->
+  <target name="create-deployable-composite" if="use.bam">
+    <property name="sca-inf.classes.dir" value="../SCA-INF/classes"/>
+    <mkdir dir="${sca-inf.classes.dir}"/>
+    <ant antfile="${oracle.home}/bin/ant-sca-package.xml" target="package" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <!-- we leverage the inbuilt scac -->
+        <property name="compositeDir" value="${basedir}/../"/>
+        <!-- needed for adf config -->
+        <property name="scac.application.home" value="${basedir}/../.."/>
+        <!-- name of the composite -->
+        <property name="compositeName" value="${composite.name}"/>
+        <!-- revision of the composite -->
+        <property name="revision" value="${composite.revision}"/>
+        <!-- input for scac -->
+        <property name="java.passed.home" value="${java.home}"/>
+    </ant>
+    <antcall target="setupDeploymentEnvironment" inheritall="true"/>
+  </target>
+  
+  <!-- deploy the composite -->
+  <target name="deploy-composite" if="use.bam">
+    <condition property="deploymentplan.name" value="null">
+       <not>
+          <isset property="${deploymentplan.name}"/>
+       </not>
+    </condition>
+    <!--
+        although the deploy task can do this, somewhere is an issue with a relative path, hence using 
+        the attachplan target directly
+    -->
+    <ant antfile="${oracle.home}/bin/ant-sca-compile.xml" target="attachplan" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.passed.home" value="${java.home}"/>
+        <property name="scac.input" value="../"/>
+        <property name="scac.sar" value="${deploy.dir}/sca_${composite.name}_rev${composite.revision}.jar"/>
+        <!-- configplan-->
+        <property name="scac.plan" value="${basedir}/${deploymentplan.name}"/>
+    </ant>
+    <echo>Deploying to http://${managed.server.host}:${managed.server.port}/soa-infra/deployer</echo>
+    <ant antfile="${oracle.home}/bin/ant-sca-deploy.xml" target="deploy" inheritall="false">
+        <!-- reformat of prop names -->
+        <property name="user" value="${server.user}"/>
+        <property name="password" value="${server.password}"/>
+        <!-- overwrite? -->
+        <property name="overwrite" value="true"/>
+        <!-- create the url for deployment -->
+        <property name="serverURL" value="http://${managed.server.host}:${managed.server.port}/soa-infra/deployer"/>
+        <!-- location of the sar -->
+        <property name="sarLocation" value="${deploy.dir}/sca_${composite.name}_rev${composite.revision}.jar"/>
+    </ant>
+  </target>
+
+  <!-- undeploy the composite -->
+  <target name="undeploy-composite" if="use.bam">
+    <ant antfile="${oracle.home}/bin/ant-sca-deploy.xml" target="undeploy" inheritall="false">
+        <!-- reformat of prop names -->
+        <property name="user" value="${server.user}"/>
+        <property name="password" value="${server.password}"/>
+        <!-- create the url for deployment -->
+        <property name="serverURL" value="http://${managed.server.host}:${managed.server.port}/soa-infra/deployer"/>
+        <!-- name of the composite -->
+        <property name="compositeName" value="${composite.name}"/>
+        <!-- revision of the composite -->
+        <property name="revision" value="${composite.revision}"/>
+    </ant>
+  </target>
+  
+  <!-- setup of deploymentplan -->
+  <target name="setupDeploymentEnvironment">
+    <property name="deployment.xml.file" value="${deploymentplan.name}"/>
+    <copy file="templates/orderbooking_deployment_plan.seed" 
+        tofile="${deployment.xml.file}" overwrite="true"/>
+    
+    <echo>Setting up deployment plan, modifying ${deployment.xml.file} </echo>
+    
+    <!-- adf only -->
+    <condition property="storefrontservice.http.endpoint" value="${managed.server.host}:${managed.server.port}">
+          <equals arg1="${soa.only.deployment}" arg2="false" />
+    </condition>    
+    <condition property="storefrontservice.contextUri" value="${storefrontservice.contextUri.adf}">
+          <equals arg1="${soa.only.deployment}" arg2="false" />
+    </condition>
+
+    <!-- soa only -->
+    <condition property="storefrontservice.contextUri" value="${storefrontservice.contextUri.soa}">
+          <equals arg1="${soa.only.deployment}" arg2="true" />
+    </condition>
+    <condition property="storefrontservice.http.endpoint" value="${managed.server.host}:${managed.server.port}">
+          <equals arg1="${soa.only.deployment}" arg2="true" />
+    </condition>
+    
+    <echo message="Replacing ws-endpoint with ${storefrontservice.http.endpoint}/${storefrontservice.contextUri}"/>    
+    <replace file="${deployment.xml.file}" 
+        token="@storefront.endpoint@" value="${storefrontservice.http.endpoint}/${storefrontservice.contextUri}"/>
+
+    <echo message="Replacing soa server and wls server information "/>    
+    <echo> -SOA: ${managed.server.host} ${managed.server.port}</echo>
+    <replace file="${deployment.xml.file}" 
+        token="@managed.server.host@" value="${managed.server.host}"/>  
+    <replace file="${deployment.xml.file}" 
+        token="@managed.server.port@" value="${managed.server.port}"/>  
+    <echo>Replacing file adapter endpoint with ${orderbooking.file.adapter.dir}</echo>
+    <replace file="${deployment.xml.file}" 
+        token="@file.endpoint@" value="${orderbooking.file.adapter.dir}"/>      
+  </target>
+
+  <!-- composite tests -->
+  <target name="test-composite" if="test.bam">
+    <echo>Running sca-testing for ${composite.name} against t3://${managed.server.host}:${managed.server.port}/soa-infra</echo>
+    <!-- api expects a file - so we create one on demand -->
+    <property name="tmp.jndi.properties" value="${basedir}/tmp-jndi.properties"/>
+    <echo file="${tmp.jndi.properties}">java.naming.factory.initial=weblogic.jndi.WLInitialContextFactory
+java.naming.provider.url=t3://${managed.server.host}:${managed.server.port}/soa-infra
+java.naming.security.principal=${server.user}
+java.naming.security.credentials=${server.password}
+dedicated.connection=true
+dedicated.rmicontext=true
+    </echo>
+    <ant antfile="${oracle.home}/bin/ant-sca-test.xml" target="test" inheritall="false">
+        <!-- connection information -->    
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.passed.home" value="${java.home}"/>
+        <!-- name of the composite -->
+        <property name="scatest.input" value="${composite.name}"/>
+        <!-- name of the testsuite -->
+        <property name="scatestsuite.input" value="OrderBookingMainTestsuite"/>
+        <!-- api is bad, hence default ones -->
+        <property name="jndi.properties.input" value="${tmp.jndi.properties}"/>
+    </ant>
+    <delete file="${tmp.jndi.properties}" />
+  </target>
+
+  <!-- seed bam adapter resources via wlst to the target server -->
+  <target name="seedBAMAdapterResources" 
+    description="creates the needed bam adatper resources" if="seed.bam.adapter"> 
+    <property name="wls.home" value="${oracle.home}/../wlserver_10.3"/>
+    <echo>Seeding bam adapter connection factory for fusion order demo (${basedir})</echo>
+    <property name="bamSeedScript" value="createBamResourceAdapterCF.py"/>
+    <!-- yak - bug in deployment plan -->
+    <java classname="GetCurrentTimestampHelper" outputproperty="timestamp">
+        <classpath path="../../bin/util"/>
+    </java>
+    <property name="bamPlan" value="BamAdapterDeploymentPlan${timestamp}.xml"/>
+    <copy file="templates/createBamResourceAdapterCF.seed" tofile="${bamSeedScript}" 
+        overwrite="true"/>
+    <replace file="${bamSeedScript}" token="@server.user@" 
+        value="${server.user}"/>
+    <replace file="${bamSeedScript}" token="@server.password@" 
+        value="${server.password}"/>
+    <replace file="${bamSeedScript}" token="@admin.server.host@" 
+        value="${admin.server.host}"/>
+    <replace file="${bamSeedScript}" token="@admin.server.port@" 
+        value="${admin.server.port}"/>
+    <replace file="${bamSeedScript}" token="@server.target@" 
+        value="${server.targets}"/>
+    <replace file="${bamSeedScript}" token="@deployment.plan@" 
+        value="${bamPlan}"/>
+    
+    <!-- THE BAM SERVER INFORMATION deployment plan -->
+    <copy file="templates/BamAdapterDeploymentPlan.seed" tofile="${bamPlan}" 
+        overwrite="true"/>
+    <replace file="${bamPlan}" token="@bam.server.username@" 
+        value="${bam.server.username}"/>
+    <replace file="${bamPlan}" token="@bam.server.password@" 
+        value="${bam.server.password}"/>
+    <replace file="${bamPlan}" token="@bam.server.host@" 
+        value="${bam.server.host}"/>
+    <replace file="${bamPlan}" token="@bam.server.port@" 
+        value="${bam.server.port}"/>
+    <replace file="${bamPlan}" token="@bam.server.instance@" 
+        value="${bam.server.instance}"/>
+    <replace file="${bamPlan}" token="@soa.oracle.home@" 
+        value="${soa.server.oracle.home}"/>
+        
+    <!-- the wlst ant task needs libs in the system class path - YAK  -->
+    <java classname="weblogic.WLST" fork="true">
+       <arg value="${bamSeedScript}" />
+       <classpath>
+         <pathelement location="${wls.home}/server/lib/weblogic.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-common.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-api.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-internal.jar"/>
+       </classpath>
+    </java> 
+    <delete file="${bamSeedScript}"/>  
+    <delete file="${bamPlan}"/>  
+  </target>
+
+  <!-- seed BAM dos / dashboard through icommand -->
+  <target name="seedBAMServerObjects" if="seed.bam.objects"
+    description="seeds the BAM dataobjects / reports / and alerts"
+    depends="createBAMConfig">
+    <property name="bam.core.lib.dir" value="${oracle.home}/bam/modules/oracle.bam_11.1.1"/>
+    <property name="bam.tp.lib.dir" value="${oracle.home}/bam/modules/oracle.bam.thirdparty_11.1.1"/>
+    <property name="jmx.lib.dir" value="${oracle.home}/modules/oracle.jmx_11.1.1"/>
+    <property name="dms.lib.dir" value="${oracle.home}/modules/oracle.dms_11.1.1"/>
+    <property name="jps.lib.dir" value="${oracle.home}/modules/oracle.jps_11.1.1"/>
+    <property name="BAM_ROOT" value="${oracle.home}/bam"/>
+    <java classname="oracle.bam.icommand.Application" fork="true" dir="${oracle.home}/bam" >
+       <sysproperty key="oracle.bam.debug" value="true"/>
+       <arg value="-CmdFile"/>
+       <arg value="${oracle.home}/bam/dataObjects/load/ImportFODBamObjects.xml"/>
+       <classpath>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-icommand.jar"/>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-common.jar"/>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-adc-ejb.jar"/>
+         <pathelement location="${bam.tp.lib.dir}/jgroups-core.jar"/>
+         <pathelement location="${dms.lib.dir}/dms.jar"/>
+         <pathelement location="${oracle.home}/modules/org.jaxen_1.1.1.jar"/>
+         <pathelement location="${jps.lib.dir}/jps-api.jar"/>         
+         <pathelement location="${bam.tp.lib.dir}/xstream-1.1.3.jar"/>
+         <pathelement location="${bam.tp.lib.dir}/commons-codec-1.3.jar"/>
+         <pathelement location="${jmx.lib.dir}/jmxframework.jar"/>
+         <pathelement location="${jmx.lib.dir}/jmxspi.jar"/>
+         <pathelement location="${oracle.home}/../wlserver_10.3/server/lib/weblogic.jar"/>
+       </classpath>
+    </java>    
+  </target>
+
+  <!-- flush normal demo data into BAM -->
+  <target name="runNormalDataIntoBam" 
+    description="load normal -flow data into bam for SOA FOD"
+    depends="createBAMConfig">
+    <property name="bam.core.lib.dir" value="${oracle.home}/bam/modules/oracle.bam_11.1.1"/>
+    <property name="bam.tp.lib.dir" value="${oracle.home}/bam/modules/oracle.bam.thirdparty_11.1.1"/>
+    <property name="dms.lib.dir" value="${oracle.home}/modules/oracle.dms_11.1.1"/>
+    <property name="jps.lib.dir" value="${oracle.home}/modules/oracle.jps_11.1.1"/>   
+    <property name="jmx.lib.dir" value="${oracle.home}/modules/oracle.jmx_11.1.1"/>   
+    <property name="BAM_ROOT" value="${oracle.home}/bam"/>
+    <java classname="oracle.bam.icommand.Application" fork="true" dir="${oracle.home}/bam"  >
+       <sysproperty key="oracle.bam.debug" value="true"/>
+       <sysproperty key="java.util.logging.config.file" value="${BAM_ROOT}\bin\utility.logging.properties"/>
+       <arg value="-CmdFile"/>
+       <arg value="${oracle.home}/bam/dataObjects/load/ImportNormalDataIntoBam.xml"/>
+       <classpath>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-icommand.jar"/>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-common.jar"/>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-adc-ejb.jar"/>
+         <pathelement location="${bam.tp.lib.dir}/jgroups-core.jar"/>
+         <pathelement location="${dms.lib.dir}/dms.jar"/>
+         <pathelement location="${oracle.home}/modules/org.jaxen_1.1.1.jar"/>
+         <pathelement location="${jps.lib.dir}/jps-api.jar"/>         
+         <pathelement location="${bam.tp.lib.dir}/xstream-1.1.3.jar"/>
+         <pathelement location="${bam.tp.lib.dir}/commons-codec-1.3.jar"/>
+         <pathelement location="${oracle.home}/../wlserver_10.3/server/lib/weblogic.jar"/>
+         <pathelement location="${jmx.lib.dir}/jmxframework.jar"/>         
+         <pathelement location="${jmx.lib.dir}/jmxspi.jar"/>                  
+       </classpath>
+    </java>    
+  </target>
+
+  <!-- clear demo data from BAM -->
+  <target name="clearBAMDemoData" 
+    description="clear data in bam for SOA FOD"
+    depends="createBAMConfig">
+    <property name="bam.core.lib.dir" value="${oracle.home}/bam/modules/oracle.bam_11.1.1"/>
+    <property name="bam.tp.lib.dir" value="${oracle.home}/bam/modules/oracle.bam.thirdparty_11.1.1"/>
+    <property name="dms.lib.dir" value="${oracle.home}/modules/oracle.dms_11.1.1"/>
+    <property name="jps.lib.dir" value="${oracle.home}/modules/oracle.jps_11.1.1"/>   
+    <property name="jmx.lib.dir" value="${oracle.home}/modules/oracle.jmx_11.1.1"/>   
+    <property name="BAM_ROOT" value="${oracle.home}/bam"/>
+    <java classname="oracle.bam.icommand.Application" fork="true" dir="${oracle.home}/bam"  >
+       <sysproperty key="oracle.bam.debug" value="true"/>
+       <sysproperty key="java.util.logging.config.file" value="${BAM_ROOT}\bin\utility.logging.properties"/>
+       <arg value="-CmdFile"/>
+       <arg value="${oracle.home}/bam/dataObjects/load/ClearFODProcessTime.xml"/>
+       <classpath>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-icommand.jar"/>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-common.jar"/>
+         <pathelement location="${bam.core.lib.dir}/oracle-bam-adc-ejb.jar"/>
+         <pathelement location="${bam.tp.lib.dir}/jgroups-core.jar"/>
+         <pathelement location="${dms.lib.dir}/dms.jar"/>
+         <pathelement location="${oracle.home}/modules/org.jaxen_1.1.1.jar"/>
+         <pathelement location="${jps.lib.dir}/jps-api.jar"/>         
+         <pathelement location="${bam.tp.lib.dir}/xstream-1.1.3.jar"/>
+         <pathelement location="${bam.tp.lib.dir}/commons-codec-1.3.jar"/>
+         <pathelement location="${oracle.home}/../wlserver_10.3/server/lib/weblogic.jar"/>
+         <pathelement location="${jmx.lib.dir}/jmxframework.jar"/>         
+         <pathelement location="${jmx.lib.dir}/jmxspi.jar"/>         
+       </classpath>
+    </java>    
+  </target>
+ 
+  <!-- create / alter / modify bam config -->
+  <target name="createBAMConfig" if="seed.bam.objects">
+    <!-- alter the config on the fly -->
+    <property name="BAM_ROOT" value="${oracle.home}/bam"/>
+    <echo file="${BAM_ROOT}/config/BAMICommandConfig.xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+&lt;BAMICommand>
+  &lt;ADCServerPort>${bam.server.port}&lt;/ADCServerPort>
+  &lt;ADCServerName>${bam.server.host}&lt;/ADCServerName>
+  &lt;ICommand_Default_User_Name>${bam.server.username}&lt;/ICommand_Default_User_Name>
+  &lt;ICommand_Default_Password>${bam.server.password}&lt;/ICommand_Default_Password>
+  &lt;Communication_Protocol>t3&lt;/Communication_Protocol>
+  &lt;SensorFactory>oracle.bam.common.statistics.noop.SensorFactoryImpl&lt;/SensorFactory>
+  &lt;GenericSatelliteChannelName>invm:topic/oracle.bam.messaging.systemobjectnotification&lt;/GenericSatelliteChannelName>
+&lt;/BAMICommand>
+    </echo>
+    <mkdir dir="${BAM_ROOT}/dataObjects"/>
+    <copy todir="${BAM_ROOT}/dataObjects" overwrite="true">
+        <fileset dir="dataObjects">
+            <include name="*"/>
+            <include name="*/**"/>
+        </fileset>
+    </copy>
+    <replace file="${BAM_ROOT}/dataObjects/load/ImportNormalDataIntoBam.xml" token="$BAM_ROOT$" value="${BAM_ROOT}"/>
+    <replace file="${BAM_ROOT}/dataObjects/load/ImportFODBamObjects.xml" token="$BAM_ROOT$" value="${BAM_ROOT}"/>
+  </target>
+
+</project>

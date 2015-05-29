@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+<!--  $Header: pcbpel/src/oracle/tip/tools/ide/workflow/taskflow/files/weblogic.xml /main/1 2008/07/30 10:50:40 rsmenon Exp $ -->
+
+<!-- 
+ Copyright (c) 2008, Oracle. All rights reserved.
+
+   NAME
+     weblogic.xml - <one-line expansion of the name>
+
+   DESCRIPTION
+     <short description of component this file declares/defines>
+
+   NOTES
+     <other useful comments, qualifications, etc.>
+
+   MODIFIED   (MM/DD/YY)
+   rsmenon     07/28/08 - needed for taskflow deployment on weblogic
+   ykuntawa    06/04/08 - Creation
+
+-->
+<!DOCTYPE weblogic-web-app PUBLIC
+  "-//BEA Systems, Inc.//DTD Web Application 7.0//EN"
+  "http://www.bea.com/servers/wls700/dtd/weblogic700-web-jar.dtd">
+<weblogic-web-app>
+   <reference-descriptor>
+      <ejb-reference-description>
+	  <ejb-ref-name>ejb/bpel/services/workflow/TaskServiceBean</ejb-ref-name>
+          <jndi-name>ejb/bpel/services/workflow/TaskServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+	  <ejb-ref-name>ejb/bpel/services/workflow/TaskMetadataServiceBean</ejb-ref-name>
+          <jndi-name>ejb/bpel/services/workflow/TaskMetadataServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+	  <ejb-ref-name>TaskReportServiceBean</ejb-ref-name>
+          <jndi-name>TaskReportServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+	  <ejb-ref-name>TaskEvidenceServiceBean</ejb-ref-name>
+          <jndi-name>TaskEvidenceServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+	  <ejb-ref-name>TaskQueryService</ejb-ref-name>
+          <jndi-name>TaskQueryService</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+	  <ejb-ref-name>RuntimeConfigService</ejb-ref-name>
+          <jndi-name>RuntimeConfigService</jndi-name>
+      </ejb-reference-description>
+       <ejb-reference-description>
+          <ejb-ref-name>UserMetadataService</ejb-ref-name>
+          <jndi-name>UserMetadataService</jndi-name>
+      </ejb-reference-description>
+
+
+    <!-- for local ref which are not used in weblogic as 
+         we use same ear on both oc4j and weblogic using this as dummy -->
+
+
+      <ejb-reference-description>
+          <ejb-ref-name>ejb/local/TaskServiceBean</ejb-ref-name>
+          <jndi-name>TaskServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>ejb/local/TaskMetadataServiceBean</ejb-ref-name>
+          <jndi-name>TaskMetadataServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>ejb/local/TaskReportServiceBean</ejb-ref-name>
+          <jndi-name>TaskReportServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>ejb/local/TaskEvidenceServiceBean</ejb-ref-name>
+          <jndi-name>TaskEvidenceServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>ejb/services/NotificationServiceBean</ejb-ref-name>
+          <jndi-name>NotificationServiceBean</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>hw_services_ejb_TaskQueryServiceLocal</ejb-ref-name>
+          <jndi-name>TaskQueryService</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>hw_services_ejb_RuntimeConfigServiceLocal</ejb-ref-name>
+          <jndi-name>RuntimeConfigService</jndi-name>
+      </ejb-reference-description>
+      <ejb-reference-description>
+          <ejb-ref-name>hw_services_ejb_UserMetadataServiceLocal</ejb-ref-name>
+          <jndi-name>UserMetadataService</jndi-name>
+      </ejb-reference-description>
+
+   </reference-descriptor>
+
+    <context-root xmlns="http://www.bea.com/ns/weblogic/weblogic-web-app">/workflow/OrderApprovalHumanTask</context-root>
+    <library-ref xmlns="http://www.bea.com/ns/weblogic/weblogic-web-app">
+        <library-name>adf.oracle.domain.webapp</library-name>
+    </library-ref>
+    <library-ref xmlns="http://www.bea.com/ns/weblogic/weblogic-web-app">
+        <library-name>jstl</library-name>
+        <specification-version>1.2</specification-version>
+    </library-ref>
+    <library-ref xmlns="http://www.bea.com/ns/weblogic/weblogic-web-app">
+        <library-name>jsf</library-name>
+        <specification-version>1.2</specification-version>
+    </library-ref>
+
+</weblogic-web-app>

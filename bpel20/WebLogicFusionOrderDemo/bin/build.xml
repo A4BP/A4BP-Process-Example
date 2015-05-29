@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project name="OracleSOAFusionOrderDemo" default="build.src.zip">
+
+<!--
+	Global build script for the whole SOA fusion order demo
+        author: clemens utschig
+-->
+  
+  <!-- master build.properties --> 
+  <property file="build.properties"/>  
+  <property name="output.file.name" value="${ant.project.name}_Source_${fod.version}.jar"/>
+  <!-- the root adf metadata information -->
+  <property name="adf.meta.dir" value="../.adf/META-INF/adf-config.xml"/>
+  
+  <!-- debug out the versions -->
+  <echo>Ant: ${ant.version} Java: ${ant.java.version}</echo>
+
+  <!-- check if oracle.home is valid -->
+  <fail message="Oracle Home ${oracle.home} is not valid - does not contain /soa/modules/oracle.soa.bpel_11.1.1/orabpel-common">
+    <condition>
+        <not>
+            <available file="${oracle.home}/soa/modules/oracle.soa.bpel_11.1.1/orabpel-common.jar"/>
+        </not>    
+    </condition>
+  </fail>
+  
+  <!-- get the java.home -->
+  <property environment="env"/>
+  <fail message="JAVA_HOME is not available. Please provide this property (as system property or as java.).">
+      <condition>
+          <and>
+              <not>
+                  <isset property="env.JAVA_HOME"/>
+              </not>
+              <not>
+                  <isset property="java.home"/>
+              </not>
+          </and>
+      </condition>
+  </fail>
+  <condition property="java.home" value="${env.JAVA_HOME}">
+      <isset property="env.JAVA_HOME"/>
+  </condition>
+
+  <!-- check if java version is 1.6 -->
+  <fail message="ant.java.home must contain Java sdk 6">
+    <condition>
+      <not>
+          <equals arg1="${ant.java.version}" arg2="1.6"/>
+      </not>   
+    </condition>
+  </fail>
+  
+  <!-- check if ant is version 1.7 -->
+  <fail message="ant version must be ant 1.7">
+      <condition>
+        <not>
+            <equals arg1="${ant.version}" 
+                arg2="Apache Ant version 1.7.0 compiled on December 13 2006"/>
+        </not>   
+      </condition>
+  </fail>    
+
+  <!-- prompt for password.  With Ant 1.7, if the property is already set   -->
+  <!--   this input will be skipped.  This will allow users to decide if    -->
+  <!--   they want to code the password in the build.properties file, or    -->
+  <!--   input that password during deployment.                             -->
+  <input
+    message="Please enter the password for the application (weblogic) server:"
+    addproperty="server.password"
+  />
+
+  <property name="wls.home" value="${oracle.home}/../wlserver_10.3"/>
+  <taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" 
+            classpath="${wls.home}/server/lib/weblogic.jar:${oracle.home}/modules/oracle.jps_11.1.1/jps-common.jar:${oracle.home}/modules/oracle.jps_11.1.1/jps-api.jar:${oracle.home}/modules/oracle.jps_11.1.1/jps-internal.jar"/>
+  
+  <target name="init">
+      <echo>SOA Suite 11g version: </echo>
+      <!-- dump the build info -->
+      <java classname="com.collaxa.cube.util.BuildInfo">
+        <classpath>
+            <pathelement location="${oracle.home}/soa/modules/oracle.soa.bpel_11.1.1/orabpel.jar"/>
+            <pathelement location="${oracle.home}/soa/modules/oracle.soa.bpel_11.1.1/orabpel-common.jar"/>
+            <pathelement location="${oracle.home}/soa/modules/oracle.soa.fabric_11.1.1/fabric-runtime.jar"/>
+        </classpath>
+      </java>
+  </target>
+  
+  <!-- clean all projects -->
+  <target name="clean" description="cleans up the SOA fusion order demo app"
+    depends="init">
+    <echo>... cleaning up sources ..</echo>
+    <delete file="../${output.file.name}"/>
+    <delete file="createJMSResources.py"/>
+    <delete file="removeJMSResources.py"/>
+    <delete dir="results" includeemptydirs="true" includes="*/**"/>
+    <ant antfile="build_sca_composite.xml" target="clean" inheritall="true" 
+        dir="${orderbooking.composite.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>    
+    <ant antfile="build_sca_composite.xml" target="clean" inheritall="true" 
+        dir="${orderbooking.bam.composite.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>    
+    <ant antfile="build_sca_composite.xml" target="clean" inheritall="true" 
+        dir="${partnersupplier.composite.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>            
+    <ant antfile="build_sca_composite.xml" target="clean" inheritall="true" 
+        dir="${b2b.composite.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>            
+    <ant antfile="build_sca_composite.xml" target="clean" inheritall="true" 
+        dir="${orderbookingsdo.composite.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>    
+    <ant antfile="build.xml" target="clean" inheritall="true" 
+        dir="${creditauthorization.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>    
+    <ant antfile="build.xml" target="clean" inheritall="true" 
+        dir="${orderapproval.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>    
+  </target>
+    
+  <!-- build all sources into the main jar file -->  
+  <target name="build.src.zip" depends="clean" 
+    description="creates the source distribution">
+    <echo>Creating the source distribution for SOA Fusion Order Demo</echo>
+    <jar basedir=".." destfile="../${output.file.name}">
+        <include name="*/**"/>
+        <include name="*/**/*"/>
+
+        <exclude name="${ant.project.name}*.jar"/>
+        <exclude name="*.zip"/>
+        <exclude name="*/*svn*/*"/>
+        <exclude name="*/**/classes/**"/>
+        <exclude name="*/**/*.war"/>
+        <exclude name="*/**/deploy"/>
+        <exclude name="*/**/*.lck"/>
+        <exclude name="*/**/*.lock"/>
+        <exclude name="*/**/*.jdb"/>
+
+        <!-- b2b -->
+        <include name="${b2b.composite.home}/config/OOW08_X12_10.zip"/>
+        <!-- serverside app for seeding demo users -->
+        <include name="bin/bpm-seed/SOATestDemoApp.ear"/>
+        <!-- utls -->
+        <include name="${orderbooking.bam.composite.home}/bin/util/GetCurrentTimestampHelper.class"/>
+    </jar>
+  </target>
+  
+  <!-- build & compile all -->
+  <target name="compile-build-all" description="Compiles and builds all artifacts" depends="init">
+    <echo>Building and compiling SOA Fusion Order Demo ..</echo>
+    <!-- composites -->
+    <ant antfile="${orderbooking.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="create-deployable-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+        
+    <ant antfile="${orderbooking.bam.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="create-deployable-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>            
+        
+    <ant antfile="${partnersupplier.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="create-deployable-composite" inheritall="false"> 
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+    </ant>    
+
+    <ant antfile="${orderbookingsdo.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="create-deployable-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+    </ant>    
+
+    <ant antfile="${b2b.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="create-deployable-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+    </ant>    
+        
+    <!-- credit auth ejb -->
+    <ant antfile="build.xml" target="create-war" inheritall="true" 
+        dir="${creditauthorization.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+    </ant>    
+    
+    <!-- human task -->    
+    <ant antfile="build.xml" target="create-ear" inheritall="true" 
+        dir="${orderapproval.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="soa.only.deployment" value="${soa.only.deployment}"/>
+          <property name="storefrontservice.contextUri.soa" 
+                value="${storefrontservice.contextUri.soa}"/>
+          <property name="storefrontservice.contextUri.adf" 
+                value="${storefrontservice.contextUri.adf}"/>
+    </ant>    
+  </target>
+  
+  <!-- build & deploy all the stuff  -->
+  <target name="compile-deploy-all" depends="compile-build-all"
+    description="builds all artifacts and deploys them">
+    <echo>Building and deploying SOA Fusion Order Demo ..</echo>
+    <!-- composites -->
+    <ant antfile="${orderbooking.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="deploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="deploy.dir" 
+                value="${orderbooking.composite.home}/${deploy.sub.dir}"/>
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+
+    <ant antfile="${orderbooking.bam.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="deploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="deploy.dir" 
+                value="${orderbooking.bam.composite.home}/${deploy.sub.dir}"/>
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+        
+    <ant antfile="${partnersupplier.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="deploy-composite" inheritall="false"> 
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="deploy.dir" 
+                value="${partnersupplier.composite.home}/${deploy.sub.dir}"/>
+
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>    
+
+    <ant antfile="${orderbookingsdo.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="deploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="deploy.dir" 
+                value="${orderbookingsdo.composite.home}/${deploy.sub.dir}"/>
+
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>
+
+    <ant antfile="${b2b.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="deploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="deploy.dir" 
+                value="${b2b.composite.home}/${deploy.sub.dir}"/>
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+        
+    <!-- credit auth ejb -->
+    <ant antfile="build.xml" target="deploy-application" inheritall="true" 
+        dir="${creditauthorization.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+
+          <property name="server.targets" value="${server.targets}"/>
+    </ant>    
+        
+    <!-- human task -->     
+    <ant antfile="build.xml" target="deploy-application" inheritall="true" 
+        dir="${orderapproval.home}/${bin.sub.dir}/">
+          <property name="soa.only.deployment" value="${soa.only.deployment}"/>
+          <property name="storefrontservice.contextUri.soa" 
+                value="${storefrontservice.contextUri.soa}"/>
+          <property name="storefrontservice.contextUri.adf" 
+                value="${storefrontservice.contextUri.adf}"/>
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+
+          <property name="managed.server.host" value="${managed.server.host}"/>
+          <property name="managed.server.port" value="${managed.server.port}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+
+          <property name="server.targets" value="${server.targets}"/>
+    </ant>    
+  </target>
+
+  <!-- seed jms resources via wlst to the target server -->
+  <target name="seedFodJmsResources" description="creates the needed jms resources">  
+    <property name="wls.home" value="${oracle.home}/../wlserver_10.3"/>
+    <echo>Seeding jms topic and connection factory for fusion order demo</echo>
+    <property name="jmsSeedScript" value="createJMSResources.py"/>
+    <!-- yak - bug in deployment plan -->
+    <java classname="GetCurrentTimestampHelper" outputproperty="timestamp">
+        <classpath path="util"/>
+    </java>
+    <property name="jmsPlan" value="JmsAdapterDeploymentPlan${timestamp}.xml"/>
+
+    <copy file="templates/createJMSResources.seed" tofile="${jmsSeedScript}" 
+        overwrite="true"/>
+    <replace file="${jmsSeedScript}" token="@server.user@" 
+        value="${server.user}"/>
+    <replace file="${jmsSeedScript}" token="@server.password@" 
+        value="${server.password}"/>
+    <replace file="${jmsSeedScript}" token="@admin.server.host@" 
+        value="${admin.server.host}"/>
+    <replace file="${jmsSeedScript}" token="@admin.server.port@" 
+        value="${admin.server.port}"/>
+    <replace file="${jmsSeedScript}" token="@server.target@" 
+        value="${server.targets}"/>
+
+    <replace file="${jmsSeedScript}" token="@deployment.plan@" 
+        value="${jmsPlan}"/>
+    
+    <!-- the jms adapter deployment plan -->
+    <copy file="templates/JmsAdapterDeploymentPlan.seed" tofile="${jmsPlan}" 
+        overwrite="true"/>
+    <replace file="${jmsPlan}" token="@server.username@" 
+        value="${server.user}"/>
+    <replace file="${jmsPlan}" token="@server.password@" 
+        value="${server.password}"/>
+    <replace file="${jmsPlan}" token="@soa.oracle.home@" 
+        value="${soa.server.oracle.home}"/>
+
+    <!-- the wlst ant task needs libs in the system class path - YAK -->
+    <java classname="weblogic.WLST" fork="true">
+       <arg value="${jmsSeedScript}" />
+       <classpath>
+         <pathelement location="${wls.home}/server/lib/weblogic.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-common.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-api.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-internal.jar"/>
+       </classpath>
+    </java>    
+    <delete file="${jmsSeedScript}"/>
+    <delete file="${jmsPlan}"/>
+  </target>
+
+  <!-- remove jms resources via wlst on the target server -->
+  <target name="removeFodJmsResources" description="removes the FOD jms resources">  
+    <property name="wls.home" value="${oracle.home}/../wlserver_10.3"/>
+    <echo>Removing jms topic and connection factory for fusion order demo</echo>
+    <property name="jmsSeedScript" value="removeJMSResources.py"/>
+    <copy file="templates/removeJMSResources.seed" tofile="${jmsSeedScript}" 
+        overwrite="true"/>
+    <replace file="${jmsSeedScript}" token="@server.user@" 
+        value="${server.user}"/>
+    <replace file="${jmsSeedScript}" token="@server.password@" 
+        value="${server.password}"/>
+    <replace file="${jmsSeedScript}" token="@admin.server.host@" 
+        value="${admin.server.host}"/>
+    <replace file="${jmsSeedScript}" token="@admin.server.port@" 
+        value="${admin.server.port}"/>
+    <replace file="${jmsSeedScript}" token="@server.target@" 
+        value="${server.targets}"/>
+        
+    <!-- the wlst ant task needs libs in the system class path - YAK -->
+    <java classname="weblogic.WLST" fork="true">
+       <arg value="${jmsSeedScript}" />
+       <classpath>
+         <pathelement location="${wls.home}/server/lib/weblogic.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-common.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-api.jar"/>
+         <pathelement location="${oracle.home}/modules/oracle.jps_11.1.1/jps-internal.jar"/>
+       </classpath>
+    </java>   
+    <delete file="${jmsSeedScript}"/>
+  </target>
+
+  <!-- creates mds connection information for adf-config.xml -->
+  <target name="createMDSConnections" 
+    description="seed the mds connection information based on the properties in build.properties">
+    <echo>mds-type : ${foreign.mds.type}</echo>
+    <condition property="db.based" value="true">
+        <equals arg1="${foreign.mds.type}" arg2="db"></equals>
+    </condition>
+    <condition property="file.based" value="true">
+        <equals arg1="${foreign.mds.type}" arg2="jdev"></equals>
+    </condition>
+    <condition property="server.file.based" value="true">
+        <equals arg1="${foreign.mds.type}" arg2="server.file"></equals>
+    </condition>
+    
+    <antcall target="createMDSConnectionForDB"/>
+    <antcall target="createMDSConnectionForFileStore"/>    
+    <antcall target="createMDSConnectionForServerFileStore"/>    
+  </target>
+  
+  <!-- seed b2b trading partner agreements -->
+  <target name="seedB2BAgreements" description="seed b2b trading partner agreements">
+    <ant antfile="${b2b.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="importAndDeployB2BTradingAgreements" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant> 
+  </target>
+  
+  <!-- root target to create MDS connection based on db / file / server.file -->
+  <target name="createMDSConnectionForDB" if="db.based">
+    <echo>Creating ${adf.meta.dir} for database backed MDS</echo>
+
+    <!-- prompt for password.  With Ant 1.7, if the property is already set   -->
+    <!--   this input will be skipped.  This will allow users to decide if    -->
+    <!--   they want to code the password in the build.properties file, or    -->
+    <!--   input that password during deployment.                             -->
+    <input
+      message="Please enter the password for the MDS schema:"
+      addproperty="jdbc-password"
+    />  
+
+    <copy file="templates/adf-config-db.seed" tofile="${adf.meta.dir}" overwrite="true"/>
+    <replace file="${adf.meta.dir}" token="@db.user@" value="${jdbc-userid}"/>
+    <replace file="${adf.meta.dir}" token="@db.password@" value="${jdbc-password}"/>
+    <replace file="${adf.meta.dir}" token="@db.connect.string@" value="${jdbc-url}"/>
+    <echo>Using ${jdbc-url} for db-based backing, with user ${jdbc-userid}</echo>
+  </target>
+
+  <target name="createMDSConnectionForFileStore" if="file.based">
+    <echo>Creating ${adf.meta.dir} for filebased MDS</echo>
+    <copy file="templates/adf-config-file.seed" tofile="${adf.meta.dir}" overwrite="true"/>
+    <replace file="${adf.meta.dir}" token="@oracle.home@" value="${oracle.home}"/>
+    <echo>Using ${oracle.home}/integration for file-based backing</echo>
+  </target>
+
+  <target name="createMDSConnectionForServerFileStore" if="server.file.based">
+    <echo>Creating ${adf.meta.dir} for server-filebased MDS</echo>
+    <copy file="templates/adf-config-server-file.seed" tofile="${adf.meta.dir}" overwrite="true"/>
+    <replace file="${adf.meta.dir}" token="@bea.home@" value="${oracle.home}/../"/>
+    <echo>Using ${oracle.home}/../user_projects/domains/soainfra/gmds/applications/soa-infra for file-based backing</echo>
+  </target>
+  
+  <!-- setup workspace for standalone jdeveloper build -->
+  <target name="setupWorkspaceForJdeveloperUse" 
+    description="Setup the SOA FOD application for jdeveloper use">
+    <echo>!!! Setting up workspace for jdeveloper use</echo>
+    <echo>--> Attention: after this was done, the settings for connections.xml are static !!!</echo>
+    <ant antfile="build.xml" target="setupDeploymentEnvironment" inheritall="true" 
+        dir="${orderapproval.home}/${bin.sub.dir}/">
+          <property name="soa.only.deployment" value="${soa.only.deployment}"/>
+          <property name="oracle.home" value="${oracle.home}"/>
+    </ant>    
+    <ant antfile="build_sca_composite.xml" target="setupDeploymentEnvironment" inheritall="true" 
+        dir="${orderbooking.composite.home}/${bin.sub.dir}/">
+          <property name="soa.only.deployment" value="${soa.only.deployment}"/>
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+    <ant antfile="build_sca_composite.xml" target="setupDeploymentEnvironment" inheritall="true" 
+        dir="${orderbooking.bam.composite.home}/${bin.sub.dir}/">
+          <property name="soa.only.deployment" value="${soa.only.deployment}"/>
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+    <ant antfile="build_sca_composite.xml" target="setupDeploymentEnvironment" inheritall="true" 
+        dir="${b2b.composite.home}/${bin.sub.dir}/">
+          <property name="soa.only.deployment" value="${soa.only.deployment}"/>
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>  
+    <antcall target="createMDSConnections"/>
+  </target>
+  
+  <!-- do it all in one shot, setup / seed / deploy and test -->
+  <target name="server-setup-seed-deploy-test" 
+    description="one shot server side deployment, including test">
+    <echo>Setting up mds store, deploying shared artifacts, 
+        seeding jms info, deploying to server, and running tests</echo>
+    <antcall target="createMDSConnections"/>
+    <antcall target="compile-deploy-all"/>
+    <antcall target="seedFodJmsResources"/>
+    <antcall target="seedB2BAgreements"/>
+    <antcall target="seedDemoUsers"/>
+
+    <!-- seed bam dataobjects / dashboards -->
+    <ant antfile="${orderbooking.bam.composite.home}/bin/build_sca_composite.xml" 
+        target="seedBAMServerObjects" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.home" value="${java.home}"/>
+        <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>            
+
+    <ant antfile="${orderbooking.bam.composite.home}/bin/build_sca_composite.xml" 
+        target="seedBAMAdapterResources" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.home" value="${java.home}"/>
+        <!-- to connect to the admin server for the deployment plan /adapter -->
+        <property name="server.password" value="${server.password}"/>        
+        <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>            
+
+    <ant antfile="${orderbooking.composite.home}/bin/build_sca_composite.xml" 
+        target="test-composite" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.home" value="${java.home}"/>
+        <property name="server.password" value="${server.password}"/>
+        <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>            
+
+    <ant antfile="${orderbooking.bam.composite.home}/bin/build_sca_composite.xml" 
+        target="test-composite" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.home" value="${java.home}"/>
+        <property name="server.password" value="${server.password}"/>
+        <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>            
+  </target>
+
+  <!-- cleanup the server, undeploy all -->
+  <target name="server-cleanup-all" description="Undeploy all artifacts from server" depends="init">
+    <echo>Undeploying all artifacts for SOA Fusion Order Demo ..</echo>
+    
+    <!-- composites -->
+    <ant antfile="${orderbooking.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="undeploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+
+    <ant antfile="${orderbooking.bam.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="undeploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+          <property name="use.bam.implementation" value="${use.bam.implementation}"/>
+    </ant>    
+        
+    <ant antfile="${partnersupplier.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="undeploy-composite" inheritall="false"> 
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>    
+
+    <ant antfile="${orderbookingsdo.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="undeploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>    
+
+    <ant antfile="${b2b.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="undeploy-composite" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>    
+        
+    <!-- credit auth ejb -->
+    <ant antfile="build.xml" target="undeploy-application" inheritall="true" 
+        dir="${creditauthorization.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+          <property name="server.user" value="${server.user}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>    
+    
+    <!-- human task -->    
+    <ant antfile="build.xml" target="undeploy-application" inheritall="true" 
+        dir="${orderapproval.home}/${bin.sub.dir}/">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="java.home" value="${java.home}"/>
+    </ant>    
+
+    <!-- b2b -->
+    <ant antfile="${b2b.composite.home}/${bin.sub.dir}/build_sca_composite.xml" 
+        target="purgeB2BTradingAgreements" inheritall="false">
+          <property name="oracle.home" value="${oracle.home}"/>
+          <property name="server.password" value="${server.password}"/>
+    </ant>   
+
+    <!-- jms resources -->
+    <antcall target="removeFodJmsResources"/>
+    
+    <!-- demo users -->    
+    <antcall target="removeDemoUsers"/>
+  </target>
+  
+  <!-- do it all in one shot, setup, seed, prepare jdev env-->
+  <target name="jdeveloper-setup-seed" 
+    description="one shot client side setup, with mds config, seed of jms, demo users and token replacement"
+    depends="init">
+    <echo>Setting up mds store, seeding jms info and setting up local files.. </echo>
+    <antcall target="createMDSConnections"/>
+    <antcall target="seedFodJmsResources"/>
+    <antcall target="seedDemoUsers"/>
+    <antcall target="setupWorkspaceForJdeveloperUse"/>
+  </target>
+
+  <!-- seed bpm demo user community -->
+  <target name="seedDemoUsers" description="seed bpm demo user community">
+      <property name="wls.user"      value="${server.user}"/>
+      <property name="wls.password"  value="${server.password}"/>
+      <property name="wls.url"  value="t3://${admin.server.host}:${admin.server.port}"/>
+  
+    <wldeploy action="deploy" name="SOATestDemoApp" 
+      source="bpm-seed/SOATestDemoApp.ear" library="false"
+      nostage="true"
+      user="${wls.user}" password="${wls.password}"
+      verbose="false" adminurl="${wls.url}"
+      remote="true" upload="true"
+      targets="${server.targets}" failonerror="false"/>
+  
+     <property name="server.url" value="http://${managed.server.host}:${managed.server.port}"/>
+     <echo message="Server URL: ${server.url} ${oracle.home}"/>
+     <java classname="oracle.bpel.services.identity.demoseed.DemoCommunitySeed" fork="yes">
+        <classpath>
+           <pathelement location="${oracle.home}/soa/modules/oracle.soa.workflow_11.1.1/bpm-services.jar"/>
+        </classpath>
+        <arg line="-serverURL ${server.url} -action SEED_COMMUNITY"/>
+     </java>
+  </target>
+
+  <!-- remove bpm demo user community, including application -->
+  <target name="removeDemoUsers" description="remove bpm demo user community">
+     <property name="server.url" value="http://${managed.server.host}:${managed.server.port}"/>
+     <echo message="Server URL: ${server.url} ${oracle.home}"/>
+     <java classname="oracle.bpel.services.identity.demoseed.DemoCommunitySeed">
+        <classpath>
+           <pathelement location="${oracle.home}/soa/modules/oracle.soa.workflow_11.1.1/bpm-services.jar"/>
+        </classpath>
+        <arg line="-serverURL ${server.url} -action REMOVE_COMMUNITY"/>
+     </java>
+      <property name="wls.user"      value="${server.user}"/>
+      <property name="wls.password"  value="${server.password}"/>
+      <property name="wls.url"  value="t3://${admin.server.host}:${admin.server.port}"/>
+  
+    <wldeploy action="undeploy" name="SOATestDemoApp" 
+      user="${wls.user}" password="${wls.password}"
+      adminurl="${wls.url}" remote="true" 
+      targets="${server.targets}" failonerror="false"/>     
+  </target>
+
+</project>

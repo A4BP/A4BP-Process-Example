@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<project name="OrderBookingComposite" default="create-deployable-composite">
+
+  <!-- master build.properties -->  
+  <property file="../../bin/build.properties"/>
+  <!-- import the property file -->
+  <property file="sca-build.properties"/>           
+  <property name="deploy.dir" value="../deploy"/>
+
+  <!-- check if ant-sca-test.xml is there for testing -->
+  <condition property="test.xml.available" value="true">
+    <available file="${oracle.home}/bin/ant-sca-test.xml"/>
+  </condition>
+  
+  <!-- create and later deploy core ob version? -->
+  <condition property="use.ob" value="false">
+    <equals arg1="${use.bam.implementation}" arg2="false"/>
+  </condition>
+
+  <!-- test ob version? -->
+  <condition property="test.ob" value="true">
+    <and>
+        <isset property="use.ob"/>
+        <isset property="test.xml.available"/>
+    </and>    
+  </condition>
+
+  <!-- cleanup -->  
+  <target name="clean">
+    <property name="sca-inf.classes.dir" value="../SCA-INF/classes"/>
+    <echo message="Deleting contents of ${sca-inf.classes.dir}"/>
+    <delete dir="${sca-inf.classes.dir}" includeemptydirs="true" includes="*/**">
+    </delete>
+    <property name="deploy.composite.filename" 
+        value="${deploy.dir}/sca_${composite.name}_rev${composite.revision}.jar"/>
+    <delete dir="results" deleteonexit="true"/>
+    <echo message="Deleting ${deploy.composite.filename}"/>
+    <delete file="${deploy.composite.filename}"/>
+  </target>
+
+  <!-- create the deployable composite sar -->
+  <target name="create-deployable-composite" if="use.ob">
+    <property name="sca-inf.classes.dir" value="../SCA-INF/classes"/>
+    <mkdir dir="${sca-inf.classes.dir}"/>
+    <ant antfile="${oracle.home}/bin/ant-sca-package.xml" target="package" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <!-- we leverage the inbuilt scac -->
+        <property name="compositeDir" value="${basedir}/../"/>
+        <!-- needed for adf config -->
+        <property name="scac.application.home" value="${basedir}/../.."/>
+        <!-- name of the composite -->
+        <property name="compositeName" value="${composite.name}"/>
+        <!-- revision of the composite -->
+        <property name="revision" value="${composite.revision}"/>
+        <!-- input for scac -->
+        <property name="java.passed.home" value="${java.home}"/>
+    </ant>
+    <antcall target="setupDeploymentEnvironment" inheritall="true"/>
+  </target>
+  
+  <!-- deploy the composite -->
+  <target name="deploy-composite" if="use.ob">
+    <condition property="deploymentplan.name" value="null">
+       <not>
+          <isset property="${deploymentplan.name}"/>
+       </not>
+    </condition>
+    <!--
+        although the deploy task can do this, somewhere is an issue with a relative path, hence using 
+        the attachplan target directly
+    -->
+    <ant antfile="${oracle.home}/bin/ant-sca-compile.xml" target="attachplan" inheritall="false">
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="scac.input" value="../"/>
+        <property name="scac.sar" value="${deploy.dir}/sca_${composite.name}_rev${composite.revision}.jar"/>
+        <property name="java.passed.home" value="${java.home}"/>
+
+        <!-- configplan-->
+        <property name="scac.plan" value="${basedir}/${deploymentplan.name}"/>
+    </ant>
+    <echo>Deploying to http://${managed.server.host}:${managed.server.port}/soa-infra/deployer</echo>
+    <ant antfile="${oracle.home}/bin/ant-sca-deploy.xml" target="deploy" inheritall="false">
+        <!-- reformat of prop names -->
+        <property name="user" value="${server.user}"/>
+        <property name="password" value="${server.password}"/>
+        <!-- overwrite? -->
+        <property name="overwrite" value="true"/>
+        <!-- create the url for deployment -->
+        <property name="serverURL" value="http://${managed.server.host}:${managed.server.port}/soa-infra/deployer"/>
+        <!-- location of the sar -->
+        <property name="sarLocation" value="${deploy.dir}/sca_${composite.name}_rev${composite.revision}.jar"/>
+    </ant>
+  </target>
+
+  <!-- undeploy the composite -->
+  <target name="undeploy-composite" if="use.ob">
+    <ant antfile="${oracle.home}/bin/ant-sca-deploy.xml" target="undeploy" inheritall="false">
+        <!-- reformat of prop names -->
+        <property name="user" value="${server.user}"/>
+        <property name="password" value="${server.password}"/>
+        <!-- create the url for deployment -->
+        <property name="serverURL" value="http://${managed.server.host}:${managed.server.port}/soa-infra/deployer"/>
+        <!-- name of the composite -->
+        <property name="compositeName" value="${composite.name}"/>
+        <!-- revision of the composite -->
+        <property name="revision" value="${composite.revision}"/>
+    </ant>
+  </target>
+  
+  <!-- setup of deployment plan -->
+  <target name="setupDeploymentEnvironment">
+    <property name="deployment.xml.file" value="${deploymentplan.name}"/>
+    <copy file="templates/orderbooking_deployment_plan.seed" 
+        tofile="${deployment.xml.file}" overwrite="true"/>
+    
+    <echo>Setting up deployment plan, modifying ${deployment.xml.file} </echo>
+    
+    <!-- adf only -->
+    <condition property="storefrontservice.http.endpoint" value="${managed.server.host}:${managed.server.port}">
+          <equals arg1="${soa.only.deployment}" arg2="false" />
+    </condition>    
+    <condition property="storefrontservice.contextUri" value="${storefrontservice.contextUri.adf}">
+          <equals arg1="${soa.only.deployment}" arg2="false" />
+    </condition>
+
+    <!-- soa only -->
+    <condition property="storefrontservice.contextUri" value="${storefrontservice.contextUri.soa}">
+          <equals arg1="${soa.only.deployment}" arg2="true" />
+    </condition>
+    <condition property="storefrontservice.http.endpoint" value="${managed.server.host}:${managed.server.port}">
+          <equals arg1="${soa.only.deployment}" arg2="true" />
+    </condition>
+    
+    <echo message="Replacing ws-endpoint with ${storefrontservice.http.endpoint}/${storefrontservice.contextUri}"/>    
+    <replace file="${deployment.xml.file}" 
+        token="@storefront.endpoint@" value="${storefrontservice.http.endpoint}/${storefrontservice.contextUri}"/>
+
+    <echo message="Replacing soa server and wls server information "/>    
+    <echo> -SOA: ${managed.server.host} ${managed.server.port}</echo>
+    <replace file="${deployment.xml.file}" 
+        token="@managed.server.host@" value="${managed.server.host}"/>  
+    <replace file="${deployment.xml.file}" 
+        token="@managed.server.port@" value="${managed.server.port}"/>  
+    <echo>Replacing file adapter endpoint with ${orderbooking.file.adapter.dir}</echo>
+    <replace file="${deployment.xml.file}" 
+        token="@file.endpoint@" value="${orderbooking.file.adapter.dir}"/>      
+  </target>
+
+  <!-- composite tests -->
+  <target name="test-composite" if="test.ob">
+    <echo>Running sca-testing for ${composite.name} against t3://${managed.server.host}:${managed.server.port}/soa-infra</echo>
+    <!-- api expects a file - so we create one on demand -->
+    <property name="tmp.jndi.properties" value="${basedir}/tmp-jndi.properties"/>
+    <echo file="${tmp.jndi.properties}">java.naming.factory.initial=weblogic.jndi.WLInitialContextFactory
+java.naming.provider.url=t3://${managed.server.host}:${managed.server.port}/soa-infra
+java.naming.security.principal=${server.user}
+java.naming.security.credentials=${server.password}
+dedicated.connection=true
+dedicated.rmicontext=true
+    </echo>
+    <ant antfile="${oracle.home}/bin/ant-sca-test.xml" target="test" inheritall="false">
+        <!-- connection information -->    
+        <property name="oracle.home" value="${oracle.home}"/>
+        <property name="java.passed.home" value="${java.home}"/>
+        <!-- name of the composite -->
+        <property name="scatest.input" value="${composite.name}"/>
+        <!-- name of the testsuite -->
+        <property name="scatestsuite.input" value="OrderBookingMainTestsuite"/>
+        <!-- api is bad, hence default ones -->
+        <property name="jndi.properties.input" value="${tmp.jndi.properties}"/>
+    </ant>
+    <delete file="${tmp.jndi.properties}" />
+  </target>
+  
+</project>

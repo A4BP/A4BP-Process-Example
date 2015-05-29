@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<wsdl:definitions
+     name="OrderProcessor"
+     targetNamespace="http://www.globalcompany.example.com/ns/OrderBookingService"
+     xmlns:ns1="/oracle/fodemo/storefront/store/queries/common/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://www.globalcompany.example.com/ns/OrderBookingService"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <wsdl:import namespace="/oracle/fodemo/storefront/store/queries/common/" location="../oracle/fodemo/storefront/store/service/common/serviceinterface/StoreFrontService.wsdl"/>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.globalcompany.example.com/ns/OrderBookingService/rules"
+             xmlns:ns1="/oracle/fodemo/storefront/store/queries/common/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://www.globalcompany.example.com/ns/OrderBookingService"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="http://www.globalcompany.example.com/ns/InternalWarehouse"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://www.globalcompany.example.com/ns/OrderBookingService" schemaLocation="OrderProcessor.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="OrderProcessorRequestMessage">
+
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="OrderProcessorResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:message name="OrderProcessorFault">
+        <wsdl:part name="code" type="xsd:string"/>
+        <wsdl:part name="orderId" type="xsd:string"/>
+        <wsdl:part name="summary" type="xsd:string"/>
+    </wsdl:message>
+
+    <wsdl:portType name="OrderProcessor">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:OrderProcessorRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="OrderProcessorCallback">
+        <wsdl:operation name="processResponse">
+            <wsdl:input message="client:OrderProcessorResponseMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="processFault">
+            <wsdl:input message="client:OrderProcessorFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="OrderProcessorCallbackBinding" type="client:OrderProcessorCallback">
+        <soap:binding xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="processResponse">
+            <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" style="rpc" soapAction="processResponse"/>
+            <wsdl:input>
+
+                <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" use="literal" namespace="http://www.globalcompany.example.com/ns/OrderBookingService"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="processFault">
+            <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" style="rpc" soapAction="processFault"/>
+            <wsdl:input>
+                <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" use="literal" namespace="http://www.globalcompany.example.com/ns/OrderBookingService"/>
+            </wsdl:input>
+        </wsdl:operation>
+
+    </wsdl:binding>
+    <wsdl:binding name="OrderProcessorBinding" type="client:OrderProcessor">
+        <soap:binding xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" URI="#wsaddr_policy" wsdl:required="true"/>
+        <wsdl:operation name="process">
+            <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" use="literal" namespace="http://www.globalcompany.example.com/ns/OrderBookingService"/>
+            </wsdl:input>
+
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="orderprocessor_client_ep">
+        <wsdl:port name="OrderProcessor_pt" binding="client:OrderProcessorBinding">
+            <soap:address xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" location="@endpointURI@"/>
+        </wsdl:port>
+    </wsdl:service>
+    <plnk:partnerLinkType name="OrderProcessor">
+        <plnk:role name="OrderProcessorRequester">
+
+            <plnk:portType name="client:OrderProcessorCallback"/>
+        </plnk:role>
+        <plnk:role name="OrderProcessorProvider">
+            <plnk:portType name="client:OrderProcessor"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+<wsp:Policy xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="wsaddr_policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+   <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy"/>
+</wsp:Policy></wsdl:definitions>

@@ -1,0 +1,6 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AGDefinition xmlns="http://xmlns.oracle.com/bpel/workflow/AGDefinition">
+   <name>B2BOrderProcessingEngine</name>
+   <resourceBundle location=""/>
+   <milestoneDisplayMode>ShowAll</milestoneDisplayMode>
+</AGDefinition>

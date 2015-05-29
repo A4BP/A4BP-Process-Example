@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<wsdl:definitions
+     name="ExternalPartnerSupplier"
+     targetNamespace="http://www.partnersupplier.example.com/ns/warehouse"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://www.partnersupplier.example.com/ns/warehouse"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://www.partnersupplier.example.com/ns/warehouse" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <xsd:import namespace="http://www.partnersupplier.example.com/ns/warehouse" schemaLocation="Warehouse.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="ExternalPartnerSupplierRequestMessage">
+        <wsdl:part name="payload" element="client:WarehouseProcessRequest"/>
+    </wsdl:message>
+    <wsdl:message name="ExternalPartnerSupplierResponseMessage">
+        <wsdl:part name="payload" element="client:WarehouseProcessResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="ExternalPartnerSupplier">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:ExternalPartnerSupplierRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="ExternalPartnerSupplierCallback">
+        <wsdl:operation name="processResponse">
+            <wsdl:input message="client:ExternalPartnerSupplierResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="ExternalPartnerSupplierBinding" type="client:ExternalPartnerSupplier">
+        <soap:binding xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" URI="#wsaddr_policy" wsdl:required="true"/>
+        <wsdl:operation name="process">
+            <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" style="document" soapAction="process"/>
+            <wsdl:input>
+                <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" use="literal" namespace="http://www.partnersupplier.example.com/ns/warehouse"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="ExternalPartnerSupplierCallbackBinding" type="client:ExternalPartnerSupplierCallback">
+        <soap:binding xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="processResponse">
+            <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" style="document" soapAction="processResponse"/>
+            <wsdl:input>
+                <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" use="literal" namespace="http://www.partnersupplier.example.com/ns/warehouse"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="externalpartnersupplier_client_ep">
+        <wsdl:port name="ExternalPartnerSupplier_pt" binding="client:ExternalPartnerSupplierBinding">
+            <soap:address xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" location="@endpointURI@"/>
+        </wsdl:port>
+    </wsdl:service>
+    <plnk:partnerLinkType name="ExternalPartnerSupplier">
+        <plnk:role name="ExternalPartnerSupplierRequester">
+            <plnk:portType name="client:ExternalPartnerSupplierCallback"/>
+        </plnk:role>
+        <plnk:role name="ExternalPartnerSupplierProvider">
+            <plnk:portType name="client:ExternalPartnerSupplier"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+<wsp:Policy xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="wsaddr_policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+   <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:orawsp="http://schemas.oracle.com/ws/2006/01/policy"/>
+</wsp:Policy></wsdl:definitions>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<adf-config xmlns="http://xmlns.oracle.com/adf/config"
+            xmlns:sec="http://xmlns.oracle.com/adf/security/config">
+  <adf-mds-config xmlns="http://xmlns.oracle.com/adf/mds/config">
+    <mds-config xmlns="http://xmlns.oracle.com/mds/config">
+      <persistence-config>
+        <metadata-namespaces>
+          <namespace metadata-store-usage="mstore-usage_1" path="/soa/shared"/>
+        </metadata-namespaces>
+        <metadata-store-usages>
+          <metadata-store-usage id="mstore-usage_1">
+            <metadata-store class-name="oracle.mds.persistence.stores.file.FileMetadataStore">
+              <property value="@bea.home@/user_projects/domains/soainfra/gmds/applications/soa-infra"
+                        name="metadata-path"/>
+            </metadata-store>
+          </metadata-store-usage>
+        </metadata-store-usages>
+      </persistence-config>
+    </mds-config>
+  </adf-mds-config>
+  <sec:adf-security-child xmlns="http://xmlns.oracle.com/adf/security/config">
+    <CredentialStoreContext credentialStoreClass="oracle.adf.share.security.providers.jps.CSFCredentialStore"
+                            credentialStoreLocation="../../src/META-INF/jps-config.xml"/>
+  </sec:adf-security-child>
+</adf-config>

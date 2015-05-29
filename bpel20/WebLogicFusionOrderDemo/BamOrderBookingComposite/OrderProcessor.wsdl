@@ -1,0 +1,70 @@
+<wsdl:definitions
+     name="OrderProcessor"
+     targetNamespace="http://www.globalcompany.example.com/ns/OrderBookingService"
+     xmlns:ns2="http://www.globalcompany.example.com/ns/OrderBookingService/rules"
+     xmlns:ns1="/oracle/fodemo/storefront/store/queries/common/"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:ns3="http://www.globalcompany.example.com/ns/InternalWarehouse"
+     xmlns:client="http://www.globalcompany.example.com/ns/OrderBookingService"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <wsdl:import namespace="/oracle/fodemo/storefront/store/queries/common/" location="services/oracle/fodemo/storefront/store/service/common/serviceinterface/StoreFrontService.wsdl"/>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.globalcompany.example.com/ns/OrderBookingService/rules"
+             xmlns:ns1="/oracle/fodemo/storefront/store/queries/common/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://www.globalcompany.example.com/ns/OrderBookingService"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="http://www.globalcompany.example.com/ns/InternalWarehouse"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://www.globalcompany.example.com/ns/OrderBookingService" schemaLocation="xsd/OrderProcessor.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.globalcompany.example.com/ns/OrderBookingService/rules"
+             xmlns:ns1="/oracle/fodemo/storefront/store/queries/common/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://www.globalcompany.example.com/ns/OrderBookingService"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="http://www.globalcompany.example.com/ns/InternalWarehouse">
+            <xsd:import namespace="http://www.globalcompany.example.com/ns/OrderBookingService/rules"
+                 schemaLocation="xsd/OrderBookingRules.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.globalcompany.example.com/ns/OrderBookingService/rules"
+             xmlns:ns1="/oracle/fodemo/storefront/store/queries/common/" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:ns3="http://www.globalcompany.example.com/ns/InternalWarehouse" xmlns:client="http://www.globalcompany.example.com/ns/OrderBookingService"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <xsd:import namespace="http://www.globalcompany.example.com/ns/InternalWarehouse" schemaLocation="xsd/InternalWarehouse.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="/oracle/fodemo/storefront/store/queries/common/" schemaLocation="services/oracle/fodemo/storefront/store/queries/common/OrderInfoVOSDO.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="OrderProcessorRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="OrderProcessorResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:message name="OrderProcessorFault">
+        <wsdl:part name="code" type="xsd:string"/>
+        <wsdl:part name="orderId" type="xsd:string"/>
+        <wsdl:part name="summary" type="xsd:string"/>
+    </wsdl:message>
+    <wsdl:portType name="OrderProcessor">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:OrderProcessorRequestMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:portType name="OrderProcessorCallback">
+        <wsdl:operation name="processResponse">
+            <wsdl:input message="client:OrderProcessorResponseMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="processFault">
+            <wsdl:input message="client:OrderProcessorFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <plnk:partnerLinkType name="OrderProcessor">
+        <plnk:role name="OrderProcessorProvider">
+            <plnk:portType name="client:OrderProcessor"/>
+        </plnk:role>
+        <plnk:role name="OrderProcessorRequester">
+            <plnk:portType name="client:OrderProcessorCallback"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</wsdl:definitions>

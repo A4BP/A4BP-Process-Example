@@ -1,0 +1,16 @@
+<wsdl:definitions
+     name="StoreFrontService"
+     targetNamespace="www.globalcompany.example.com"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:tns="www.globalcompany.example.com"
+     xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+    <wsdl:import namespace="www.globalcompany.example.com" location="services/oracle/fodemo/storefront/store/service/common/serviceinterface/StoreFrontService.wsdl"/>
+    <plnk:partnerLinkType name="StorefrontService">
+        <plnk:role name="StoreFrontService">
+            <plnk:portType name="tns:StoreFrontService"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+</wsdl:definitions>
