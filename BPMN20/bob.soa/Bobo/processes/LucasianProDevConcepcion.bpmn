@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bpmn:definitions fileRevision="20120601" version="12.1.3.0.0.00.00" xmlns:ns2="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns4="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:ns3="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmnext="http://xmlns.oracle.com/bpm/OracleExtensions" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
+<bpmn:definitions fileRevision="20120601" version="12.1.3.0.0.00.00" xmlns:ns2="http://www.omg.org/spec/DD/20100524/DC" xmlns="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns3="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpmnext="http://xmlns.oracle.com/bpm/OracleExtensions" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
     <bpmn:process processType="Public" isExecutable="true" name="LucasianProDevConcepcion" id="LucasianProDevConcepcion">
         <bpmn:extensionElements>
             <bpmnext:OracleExtensions>
@@ -15,7 +15,7 @@
                     <bpmnext:StringFeature value="http://xmlns.oracle.com/bpmn/bpmnProcess/LucasianProDevConcepcion" name="NAMESPACE"/>
                     <bpmnext:StringFeature value="PROJECT_DEFAULT" name="generatesEvents"/>
                     <bpmnext:StringFeature value="HORIZONTAL_LAYOUT" name="process-layout"/>
-                    <bpmnext:StringFeature value="1.998" name="scale"/>
+                    <bpmnext:StringFeature value="0.766" name="scale"/>
                     <bpmnext:StringFeature value="REGULAR" name="sealType"/>
                 </bpmnext:FeatureSet>
                 <bpmnext:Localization>
@@ -80,7 +80,7 @@
                 </bpmn:extensionElements>
             </bpmn:lane>
         </bpmn:laneSet>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Levantar Proceso de negocio" id="ABSTRACT_ACTIVITY6118003750074">
+        <bpmn:userTask isForCompensation="false" name="Levantar Proceso de negocio" id="ABSTRACT_ACTIVITY6118003750074">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -88,16 +88,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Levantar Proceso de negocio</bpmnext:LocalizedContent>
@@ -110,121 +114,10 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118003750074_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118003750074_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'Analista'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Socializar plan de proyecto" id="ABSTRACT_ACTIVITY6118023157830">
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="Analista" id="lane1"/>
+        </bpmn:userTask>
+        <bpmn:userTask isForCompensation="false" name="Socializar plan de proyecto" id="ABSTRACT_ACTIVITY6118023157830">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -232,16 +125,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Socializar plan de proyecto</bpmnext:LocalizedContent>
@@ -254,121 +151,10 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118023157830_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118023157830_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'GerenteDeProyecto'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Definir modelo de casos de uso" id="ABSTRACT_ACTIVITY6118030208085">
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="GerenteDeProyecto" id="lane0"/>
+        </bpmn:userTask>
+        <bpmn:userTask isForCompensation="false" name="Definir modelo de casos de uso" id="ABSTRACT_ACTIVITY6118030208085">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -376,16 +162,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Definir modelo de casos de uso</bpmnext:LocalizedContent>
@@ -398,121 +188,10 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118030208085_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118030208085_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'Analista'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Revizar alcance VS contrato" id="ABSTRACT_ACTIVITY6118037483123">
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="Analista" id="lane1"/>
+        </bpmn:userTask>
+        <bpmn:userTask isForCompensation="false" name="Revizar alcance VS contrato" id="ABSTRACT_ACTIVITY6118037483123">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -520,16 +199,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Revizar alcance VS contrato</bpmnext:LocalizedContent>
@@ -542,121 +225,10 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118037483123_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118037483123_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'Analista'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Cierre alcance funcional primario" id="ABSTRACT_ACTIVITY6118040197132">
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="Analista" id="lane1"/>
+        </bpmn:userTask>
+        <bpmn:userTask isForCompensation="false" name="Cierre alcance funcional primario" id="ABSTRACT_ACTIVITY6118040197132">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -664,16 +236,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Cierre alcance funcional primario</bpmnext:LocalizedContent>
@@ -686,121 +262,10 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118040197132_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118040197132_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'Analista'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Definir plan de iteraciones" id="ABSTRACT_ACTIVITY6118043147698">
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="Analista" id="lane1"/>
+        </bpmn:userTask>
+        <bpmn:userTask isForCompensation="false" name="Definir plan de iteraciones" id="ABSTRACT_ACTIVITY6118043147698">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -808,16 +273,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Definir plan de iteraciones</bpmnext:LocalizedContent>
@@ -830,121 +299,10 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118043147698_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118043147698_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'GerenteDeProyecto'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
-        <bpmn:callActivity calledElement="bpmn:PRGestionBOBTTR" isForCompensation="false" name="Crear plan de pruebas" id="ABSTRACT_ACTIVITY6118056358353">
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="GerenteDeProyecto" id="lane0"/>
+        </bpmn:userTask>
+        <bpmn:userTask isForCompensation="false" name="Crear plan de pruebas" id="ABSTRACT_ACTIVITY6118056358353">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
                     <bpmnext:GraphicsAttributes>
@@ -952,16 +310,20 @@
                     </bpmnext:GraphicsAttributes>
                     <bpmnext:FeatureSet>
                         <bpmnext:BooleanFeature value="false" name="hasCheckpoint"/>
-                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="isDraft"/>
+                        <bpmnext:BooleanFeature value="false" name="reinitiate"/>
+                        <bpmnext:BooleanFeature value="false" name="manualCreation"/>
+                        <bpmnext:BooleanFeature value="false" name="inputValidation"/>
                         <bpmnext:BooleanFeature value="false" name="outputValidation"/>
                         <bpmnext:StringFeature value="[]" name="TagFeature"/>
                         <bpmnext:StringFeature value="PROCESS_DEFAULT" name="generatesEvents"/>
                         <bpmnext:StringFeature value="" name="lane"/>
                         <bpmnext:StringFeature value="PARALLEL_GATEWAY6118011290794" name="level"/>
-                        <bpmnext:StringFeature value="PRGestionBOBTTR" name="relatedProcessName"/>
                         <bpmnext:StringFeature value="USE_PROCESS_PERMISSION" name="sealType"/>
+                        <bpmnext:StringFeature value="REUSE_PAYLOAD" name="reinitiatorPolicy"/>
+                        <bpmnext:StringFeature value="SIMPLE" name="humanTaskType"/>
                     </bpmnext:FeatureSet>
+                    <bpmnext:HumanTask/>
                     <bpmnext:Localization>
                         <bpmnext:Label>
                             <bpmnext:LocalizedContent language="en">Crear plan de pruebas</bpmnext:LocalizedContent>
@@ -974,120 +336,9 @@
                     <bpmnext:LogHandlers/>
                 </bpmnext:OracleExtensions>
             </bpmn:extensionElements>
-            <bpmn:ioSpecification>
-                <bpmn:dataInput name="inBOLucasianProDevTarea" id="inBOLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataInput>
-                <bpmn:dataOutput name="outLucasianProDevTarea" id="outLucasianProDevTarea">
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:TypeRef refType="schema" name="Tarea" namespace="http://www.lucasian.com/Tarea" implementationType="element"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                </bpmn:dataOutput>
-                <bpmn:inputSet id="ABSTRACT_ACTIVITY6118056358353_uniqueInputSet">
-                    <bpmn:dataInputRefs>inBOLucasianProDevTarea</bpmn:dataInputRefs>
-                </bpmn:inputSet>
-                <bpmn:outputSet id="ABSTRACT_ACTIVITY6118056358353_uniqueOutputSet">
-                    <bpmn:dataOutputRefs>outLucasianProDevTarea</bpmn:dataOutputRefs>
-                </bpmn:outputSet>
-            </bpmn:ioSpecification>
-            <bpmn:dataInputAssociation>
-                <bpmn:extensionElements>
-                    <bpmnext:OracleExtensions/>
-                </bpmn:extensionElements>
-                <bpmn:sourceRef>boLucasianProDevFase</bpmn:sourceRef>
-                <bpmn:targetRef>inBOLucasianProDevTarea</bpmn:targetRef>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getProcessInstanceAttribute('activityName')
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:nombre
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:proyectoId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/faseproyecto" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">concat(bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:proyectoId, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:nombre, ':', bpmn:getDataObject('boLucasianProDevFase')/ns:detalle/ns:version, ':', bpmn:getProcessInstanceAttribute('activityName'))
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:tareaId
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-                <bpmn:assignment>
-                    <bpmn:extensionElements>
-                        <bpmnext:OracleExtensions>
-                            <bpmnext:DataAssignment operation="copy" ignoreMissingData="false"/>
-                        </bpmnext:OracleExtensions>
-                    </bpmn:extensionElements>
-                    <bpmn:from xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'SQA'
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:from>
-                    <bpmn:to xsi:type="bpmn:tFormalExpression" language="http://www.w3.org/1999/XPath" xpathns:ns="http://www.lucasian.com/Tarea" xpathns:bpmn="http://www.omg.org/bpmn20" xmlns:xpathns="http://xmlns.oracle.com/bpm/XPathNamespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">bpmn:getDataInput('inBOLucasianProDevTarea')/ns:rol
-                        <bpmn:extensionElements>
-                            <bpmnext:OracleExtensions>
-                                <bpmnext:Expression mode="simple"/>
-                            </bpmnext:OracleExtensions>
-                        </bpmn:extensionElements>
-                    </bpmn:to>
-                </bpmn:assignment>
-            </bpmn:dataInputAssociation>
-        </bpmn:callActivity>
+            <bpmn:ioSpecification/>
+            <bpmn:resourceRole name="SQA" id="lane2"/>
+        </bpmn:userTask>
         <bpmn:userTask isForCompensation="false" name="Crear un plan de proyecto" id="ABSTRACT_ACTIVITY6117820458965">
             <bpmn:extensionElements>
                 <bpmnext:OracleExtensions>
