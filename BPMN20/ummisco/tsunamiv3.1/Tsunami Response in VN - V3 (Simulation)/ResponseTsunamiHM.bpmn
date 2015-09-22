@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="_2015032708907" targetNamespace="http://www.bizagi.com/definitions/_2015032708907" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="_2015032708907" 
+  targetNamespace="http://www.bizagi.com/definitions/_2015032708907" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
   <resource id="Military" name="Military">
     <documentation />
   </resource>
